@@ -65,7 +65,6 @@ def samples_integrating_measures(integrating_measure, n_samples, dict_interventi
     
 
     for j in range(len(integrating_measure)):
-        # print('##### I am doint the SUB integrating_measures:', j)
         samples_dict[integrating_measure[j].variable] = integrating_measure[j].get_samples(n_samples = n_samples, 
                                                                                             inter_values = dict_interventions,
                                                                                             sampled_data = samples_dict)       
@@ -73,8 +72,6 @@ def samples_integrating_measures(integrating_measure, n_samples, dict_interventi
     intervention_set = integrating_measure[0].intervention_set
     n = dict_interventions[''.join(intervention_set)].shape[0]
 
-    #print('samples_dict', samples_dict)
-    #print('intervention_set', intervention_set)
     ## When len(integrating_measure) > 1 this is creating an array of draws from the joint
     total_samples = concatenate_samples(n_samples, dict_interventions, samples_dict, inputs_BF, n, intervention_set)
 
@@ -102,7 +99,6 @@ def concatenate_samples(n_samples, dict_interventions, samples_dict, inputs_BF, 
                 new_sample[i] = single_sample[:,:,np.newaxis]
             else:
                 new_sample[i] = np.tile(single_sample[:,np.newaxis,:], (1, n, 1))
-                #print('single_sample', single_sample.shape)
         else:
             ## If the variable has NOT been sampled get the values from the intervention values
             data_int = dict_interventions[''.join(intervention_set)]

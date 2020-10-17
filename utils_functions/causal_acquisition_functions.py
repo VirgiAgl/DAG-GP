@@ -43,7 +43,6 @@ class CausalExpectedImprovement(Acquisition):
         self.task = task
 
     def evaluate(self, x: np.ndarray) -> np.ndarray:
-        #print('##### CausalExpectedImprovement')
         """
         Computes the Expected Improvement.
 

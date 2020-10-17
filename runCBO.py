@@ -67,15 +67,8 @@ experiment = args.experiment
 task = args.task
 model_type = args.model_type
 
-print('exploration_set', exploration_set)
-print('initial_num_obs_samples', initial_num_obs_samples)
-print('num_interventions', num_interventions)
-print('type_cost', type_cost)
-print('num_trials', num_trials)
-print('causal_prior', causal_prior)
-print('experiment', experiment)
-print('task', task)
-print('name_index', name_index)
+print('causal_prior:', causal_prior)
+print('experiment:', experiment)
 
 
 ## Import the data
@@ -120,13 +113,11 @@ data_x_list, data_y_list, best_intervention_value, opt_y, best_variable = define
 BF_data, PF_data = define_initial_data(graph, interventional_data, num_interventions, name_index)
 
 
-print('initial best_variable', best_variable)
-print('initial optimal solution', opt_y)
 ## Define cost structure
 costs = graph.get_cost_structure(type_cost = type_cost)
 
 
-print('Exploring ' + str(exploration_set) + ' with CEO and Causal prior = ' + str(causal_prior))
+print('Exploring ' + str(exploration_set) + ' with CBO and Causal prior = ' + str(causal_prior))
 
 (current_cost, current_best_x, current_best_y, 
 global_opt, observed, total_time) = CBO(num_trials, eval(exploration_set), manipulative_variables, data_x_list, data_y_list,  BF_data, PF_data,
@@ -139,12 +130,10 @@ global_opt, observed, total_time) = CBO(num_trials, eval(exploration_set), manip
 save_results_CBO_CTF(folder,  args, current_cost, current_best_x, current_best_y, global_opt, observed, total_time, model_type)
 
 
-print('Saved results')
-print('exploration_set', args.exploration_set)
-print('causal_prior', args.causal_prior)
-print('type_cost', args.type_cost)
-print('total_time', total_time)
-print('folder', folder)
+print('Results saved')
+print('causal_prior:', args.causal_prior)
+print('type_cost:', args.type_cost)
+print('folder:', folder)
 
 
 

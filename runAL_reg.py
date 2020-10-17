@@ -65,9 +65,9 @@ causal_prior = args.causal_prior
 experiment = args.experiment
 n_steps = args.n_steps
 
-print('n_int', n_int)
-print('causal_prior', causal_prior)
-print('experiment', experiment)
+print('n_int:', n_int)
+print('causal_prior:', causal_prior)
+print('experiment:', experiment)
 
 
 ## Import observational data
@@ -75,8 +75,6 @@ observational_data = pd.read_pickle('./Data/' + str(args.experiment) + '/' + 'ob
 full_observational_data = pd.read_pickle('./Data/' + str(args.experiment) + '/' + 'observations.pkl')
 ## Import interventional data
 interventional_data = np.load('./Data/' + str(args.experiment) + '/' + 'interventional_data.npy', allow_pickle=True)
-
-print('size obs dataset:', observational_data.shape[0])
 
 if experiment == 'ToyGraph':
     graph = ToyGraph(observational_data)
@@ -141,7 +139,6 @@ def fit_single_GP(causal_prior, data, inputs_dim, mean_function_do, var_function
         mf.update_gradients = lambda a, b: None
 
         causal_kernel = CausalRBF(input_dim=inputs_dim, variance_adjustment=var_function_do)
-        #causal_kernel.variance.fix(1.)
 
         gpy_model = GPy.models.GPRegression(data[0], data[1], causal_kernel, mean_function=mf)
         gpy_model.likelihood.variance.fix(1e-5)
@@ -168,20 +165,10 @@ def AL_reg(emukit_model, target_function, space, initial_data, n_steps,
     for i in range(n_steps):
         print('step:', i)
 
-        ## Instead of doing this we do like CTF: Compute predictive variance in test inputs
-        # acquisition = ModelVariance(model)
-        # optimizer = GradientAcquisitionOptimizer(space)
-        
-        # np.random.seed(1)
-        # x_new, _ = optimizer.optimize(acquisition)
-
-
-        ## As in CTF
         mean, var = model.predict(test_inputs)
         index = np.where(var == np.max(var))[0][0]
         max_value = var[index]
         x_new = np.transpose(test_inputs[index][:,np.newaxis])
-
 
         y_new = target_function(x_new)
         
@@ -192,19 +179,6 @@ def AL_reg(emukit_model, target_function, space, initial_data, n_steps,
         model.set_data(inputs_new, outputs_new)
         
         mu_plot, var_plot = model.predict(test_inputs)
-
-        # if (model.model.X).shape[1] ==1:
-        #     plt.plot(test_inputs, mu_plot)
-        #     plt.plot(test_inputs, true_function)
-        #     plt.scatter(model.model.X, model.model.Y)
-
-        #     plt.fill_between(test_inputs[:,0],
-        #              mu_plot[:,0] 
-        #              + 2* np.sqrt(var_plot)[:,0],
-        #              mu_plot[:,0] 
-        #              - 2* np.sqrt(var_plot)[:,0], alpha=0.3, color ='blue')
-
-        #     plt.show()
 
         mean_list.append(mu_plot)
         var_list.append(var_plot)
@@ -222,7 +196,6 @@ prediction_var_list = [None]*len(ES)
 rmse_list = [None]*len(ES)
 
 for i in range(len(ES)):
-    print('################### ES[i]', ES[i])
     set_variable = ES[i][0]
     if i == index_BF and BF_data[0] is None:
         BF_model = None
@@ -267,12 +240,11 @@ save_results_ALreg(folder,  args, causal_prior, rmse_list, model_list_inputs, mo
 
 
 
-print('Saved results')
+print('Results saved')
 
 print('Algorithm: AL GP reg')
-print('causal_prior', args.causal_prior)
-print('name_index', name_index)
-print('folder', folder)
+print('causal_prior:', args.causal_prior)
+print('folder:', folder)
 
 
 

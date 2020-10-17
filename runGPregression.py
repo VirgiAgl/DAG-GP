@@ -67,7 +67,6 @@ full_observational_data = pd.read_pickle('./Data/' + str(args.experiment) + '/' 
 ## Import interventional data
 interventional_data = np.load('./Data/' + str(args.experiment) + '/' + 'interventional_data.npy', allow_pickle=True)
 
-print('size obs dataset:', observational_data.shape[0])
 
 if experiment == 'ToyGraph':
     graph = ToyGraph(observational_data)
@@ -124,7 +123,6 @@ pred_mean_list = []
 pred_var_list = []
 
 for i in range(len(ES)):
-    print('ES[i]', ES[i])
     if i == index_BF and BF_data[0] is None:
         BF_model = None
     else:
@@ -144,12 +142,11 @@ save_results_GPreg(folder,  args, causal_prior, pred_mean_list, pred_var_list)
 
 
 
-print('Saved results')
+print('Results saved')
 
 print('Algorithm: GP reg')
-print('causal_prior', args.causal_prior)
-print('name_index', name_index)
-print('folder', folder)
+print('causal_prior:', args.causal_prior)
+print('folder:', folder)
 
 
 

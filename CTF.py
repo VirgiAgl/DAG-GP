@@ -26,7 +26,6 @@ def CTF(BF_data, PF_data, observational_data, graph, functions, Causal_prior=Fal
 	
 
 	## Define prior model for BF
-	#print('Computing BF parameters')
 	mean_function_BF, kernel_function_BF = get_parameters_BF(Causal_prior, graph, observational_data, functions)
 	
 	
@@ -39,7 +38,6 @@ def CTF(BF_data, PF_data, observational_data, graph, functions, Causal_prior=Fal
 	if d is not None and total_samples_test_inputs is not None:
 		print('Not None')
 	
-	#print('dict_interventions', dict_interventions)
 	if total_samples is None:
 		total_samples = generate_full_samples_IM(integrating_measures, n_samples, dim_BF, dict_interventions, inputs_BF)
 	
@@ -50,7 +48,6 @@ def CTF(BF_data, PF_data, observational_data, graph, functions, Causal_prior=Fal
 
 	## Udate the base function if it is part of T 
 	if any(m==1 for m in graph.get_IMs(functions)):
-		#print('##### I am computing forward_parameters ##### ')
 		Transferred_mean_list[1], Transferred_covariance_list[1] = forward_parameters(BF_inputs = test_inputs_list[-1], 
 																					BF_data=BF_data, 
 																					PF_data = PF_data,  
@@ -63,7 +60,6 @@ def CTF(BF_data, PF_data, observational_data, graph, functions, Causal_prior=Fal
 																					n_samples=10)
 	
 
-	#print('#####  I am computing backward_parameters ##### ')
 	## Update all PFs - The base set is the last element of the exploration_set so we can just exclude this term 
 	Transferred_mean_list[0], Transferred_covariance_list[0], d = backward_parameters(PF_inputs = test_inputs_list[:-1], 
 																			 BF_data = BF_data, 
@@ -77,7 +73,6 @@ def CTF(BF_data, PF_data, observational_data, graph, functions, Causal_prior=Fal
 																			 d = d,
 																			 kernel = 'causal',
 																			 n_samples=n_samples)
-	#n_samples=1000
 								  
 
 	## Compute total time for training

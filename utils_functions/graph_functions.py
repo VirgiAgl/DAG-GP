@@ -66,8 +66,6 @@ def Intervention_function(*interventions, model, target_variable,
                           max_intervention):
     num_samples = 100000
 
-    print('interventions', interventions)
-    print('min_intervention', min_intervention)
     assert len(min_intervention) == len(interventions[0])
     assert len(max_intervention) == len(interventions[0])
 

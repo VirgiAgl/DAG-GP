@@ -42,21 +42,7 @@ def backward_parameters(PF_inputs, BF_data, PF_data, graph, functions,
         raise ValueError("No data provided")
     
     integrating_measures = graph.get_IMs(functions)
-    # dim_BF, inputs_BF, index_BF = graph.get_info_BF()
-    # exploration_set, _ , _ = graph.get_sets_CTF()
-    # dict_test_inputs = initialise_dicts_CTF(exploration_set[:-1], PF_inputs)
 
-
-    ## This is creating samples that we are using for all the computations
-    #print('Generating samples')
-
-    # for i in range(len(total_samples)):
-    #     print('i',i)
-    #     print('shape total_samples', total_samples[i].shape)
-    #     print('shape total_samples_test_inputs', total_samples_test_inputs[i].shape)
-
-
-    #print('Computing the prior mean')
     prior_mean_BF, prior_mean_PF, prior_mean_PF_inputs = get_prior_mean_vectors(PF_inputs, 
                                                                                 BF_data, PF_data,
                                                                                 total_samples, 
@@ -67,21 +53,14 @@ def backward_parameters(PF_inputs, BF_data, PF_data, graph, functions,
     ## Aggregate mean values and output vectors         
     prior_mean_vector, outputs = aggregate_mean_ouput_vectors(BF_data, PF_data, prior_mean_BF, prior_mean_PF)
 
-
-    ## Construct covariance terms
-    #print('Computing d')
     if d is None:
-        #print('d is none')
         d = covariance_test_inputs(PF_inputs, kernel_function_BF, samples = total_samples_test_inputs, n_samples = n_samples)
 
-    #print('Computing qKq')
     qKq = covariance_test_inputs_data(PF_inputs, BF_data, kernel_function_BF, integrating_measures, total_samples, 
                                       total_samples_test_inputs)
 
-    #print('Computing sigma')
     sigma = covariance_data(BF_data, PF_data, kernel_function_BF, integrating_measures, total_samples)
             
-    #print('Computing posterior parameters')
     ## Compute posterior parameters for the PFs
     mean = prior_mean_PF_inputs + np.matmul(np.matmul(qKq, np.linalg.inv(sigma)), outputs-prior_mean_vector)
     covariance = d - np.matmul(np.matmul(qKq, np.linalg.inv(sigma)), np.transpose(qKq))

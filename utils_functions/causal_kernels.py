@@ -72,8 +72,6 @@ class CausalRBF(Stationary):
         if X2 is None:
             X2 = X
 
-        # print('variance', self.variance)
-        # print('lengthscale', self.lengthscale)
 
         r = self._scaled_dist(X, X2)
         value = self.variance * np.exp(-0.5 * r**2)

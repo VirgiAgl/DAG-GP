@@ -51,7 +51,6 @@ def CBO(num_trials, exploration_set, manipulative_variables, data_x_list, data_y
 											min_intervention = list_interventional_ranges(graph.get_interventional_ranges(), exploration_set[s])[0],
 											max_intervention = list_interventional_ranges(graph.get_interventional_ranges(), exploration_set[s])[1])
 
-	print('observational_samples', observational_samples.shape)
 	############################# LOOP
 	start_time = time.clock()
 	for i in range(num_trials):
@@ -73,7 +72,7 @@ def CBO(num_trials, exploration_set, manipulative_variables, data_x_list, data_y
 		if uniform < epsilon_coverage:
 			observed += 1
 			type_trial.append(0)
-			print('Num observation trials', observed)
+
 			## Collect observations and append them to the current observational dataset
 			new_observational_samples = observe(num_observation = num_additional_observations, 
 												complete_dataset = full_observational_samples, 
@@ -123,15 +122,11 @@ def CBO(num_trials, exploration_set, manipulative_variables, data_x_list, data_y
 														var_functions_list[index], 
 														data_x_list[index], data_y_list[index], Causal_prior)
 					
-				# print('updated model_list variance', [model_list[i].model.kern.variance for i in range(len(exploration_set))])
-				# print('updated model_list len', [model_list[i].model.kern.lengthscale for i in range(len(exploration_set))])
-
 				## Compute acquisition function given the updated BO models for the interventional data
 				## Notice that we use current_global and the costs to compute the acquisition functions
 				for s in range(len(exploration_set)):
 					y_acquisition_list[s], x_new_list[s] = find_next_y_point(space_list[s], model_list[s], current_global, exploration_set[s], costs, graph, task = task)
 			else:
-				print('## Fitting CTF ##')
 				(Transferred_mean_list, Transferred_covariance_list,
     			total_samples, total_samples_test_inputs, d) = CTF(BF_data, PF_data, observational_samples, 
     														   graph, functions, Causal_prior = Causal_prior, total_samples_test_inputs = total_samples_test_inputs, d=d)
@@ -139,16 +134,10 @@ def CBO(num_trials, exploration_set, manipulative_variables, data_x_list, data_y
 				y_acquisition_list, x_new_list = find_next_y_point_CTF(Transferred_mean_list, 
 																	Transferred_covariance_list, current_global, costs, graph)
 
-				#print('BF_data', BF_data)
-				#print('PF_data', PF_data)
 
 			## Selecting the variable to intervene based on the values of the acquisition functions
 			var_to_intervene = exploration_set[np.where(y_acquisition_list == np.max(y_acquisition_list))[0][0]]
 			index = np.where(y_acquisition_list == np.max(y_acquisition_list))[0][0]
-
-			# var_to_intervene = exploration_set[3]
-			# index = 3
-			#value = np.array([[-5.        ,  3.27586207]])
 
 
 			## Evaluate the target function at the new point
@@ -156,13 +145,11 @@ def CBO(num_trials, exploration_set, manipulative_variables, data_x_list, data_y
 			y_new = target_function_list[index](np.transpose(x_new_list[index][:,np.newaxis]))
 
 			print('Selected intervention: ', var_to_intervene)
-			print('index',index)
 			print('Selected point: ', x_new_list[index])
 			print('Target function at selected point: ', y_new)
 
 
 			if model_type ==0:
-				print('############# Doing this')
 				## Append the new data and set the new dataset of the BO model
 				data_x, data_y_x = add_data([data_x_list[index], data_y_list[index]], 
 													  [np.transpose(x_new_list[index][:,np.newaxis]), y_new])
@@ -181,24 +168,16 @@ def CBO(num_trials, exploration_set, manipulative_variables, data_x_list, data_y
 
 				## Optimise BO model given the new data
 				#model_list[index].optimize()
-
-				# print('model_list variance', [model_list[i].model.kern.variance for i in range(len(exploration_set))])
-				# print('model_list len', [model_list[i].model.kern.lengthscale for i in range(len(exploration_set))])
-
 			else:
 				## Compute cost
 				cumulative_cost += len(exploration_set[index])
 				var_to_intervene = dict_interventions[index]
 				current_cost.append(cumulative_cost)
-				print('befre PF_data', PF_data)
-				print('befre BF_data', BF_data)
 				new_PF_data = [[None]*len(PF_data[0]),[None]*len(PF_data[1])]
 				new_BF_data = [None,None]
 
-				print('index', index)
 
 				for i in range(len(exploration_set)):
-					print('i', i)
 
 					if i == index:
 						if i != index_BF:
@@ -219,11 +198,6 @@ def CBO(num_trials, exploration_set, manipulative_variables, data_x_list, data_y
 				PF_data = new_PF_data
 				BF_data = new_BF_data
 
-				print('PF_data', PF_data)
-				print('BF_data', BF_data)
-
-			#print('PF_data end iteration', PF_data[0][3])
-			#print('PF_data end iteration', PF_data[1][3])
 
 		 	## Update the dict storing the current optimal solution
 			current_best_x[var_to_intervene].append(np.transpose(x_new_list[index][:,np.newaxis])[0][0])
@@ -233,7 +207,6 @@ def CBO(num_trials, exploration_set, manipulative_variables, data_x_list, data_y
 			current_global = find_current_global(current_best_y, dict_interventions, task)
 			global_opt.append(current_global)
 			
-			print('Causal_prior', Causal_prior)
 			print('####### Current_global #########', current_global)
 
 	## Compute total time for the loop

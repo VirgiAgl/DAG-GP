@@ -58,9 +58,9 @@ causal_prior = args.causal_prior
 experiment = args.experiment
 n_steps = args.n_steps
 
-print('n_int', n_int)
-print('causal_prior', causal_prior)
-print('experiment', experiment)
+print('n_int:', n_int)
+print('causal_prior:', causal_prior)
+print('experiment:', experiment)
 
 
 ## Import observational data
@@ -69,7 +69,6 @@ full_observational_data = pd.read_pickle('./Data/' + str(args.experiment) + '/' 
 ## Import interventional data
 interventional_data = np.load('./Data/' + str(args.experiment) + '/' + 'interventional_data.npy', allow_pickle=True)
 
-print('size obs dataset:', observational_data.shape[0])
 
 if experiment == 'ToyGraph':
     graph = ToyGraph(observational_data)
@@ -89,13 +88,11 @@ folder = set_saving_folder_CTF(args)
 pathlib.Path("./Data/" + folder).mkdir(parents=True, exist_ok=True)
 
 
-
 ## Get the initial design (initial interval data) corresponding to a random permutation of the intervential data with seed given by name_index
 BF_data, PF_data = define_initial_data(graph, interventional_data, n_int, name_index)
 
 ##get points that are potential locations for function evaluation  
 test_inputs_list = graph.get_test_inputs_list(size = 300)
-#np.save("./Data/" + folder + "test_inputs_list.npy", test_inputs_list)
 
 
 functions = graph.fit_all_models()
@@ -163,12 +160,11 @@ save_results_AL_CTF(folder,  args, causal_prior, Transferred_mean_list_total, Tr
                     max_values_list, point_values_list,function_values_list, BF_data_list, PF_data_list)
 
 
-print('Saved results')
+print('Results saved')
 
 print('Algorithm: AL CTF')
-print('causal_prior', args.causal_prior)
-print('name_index', name_index)
-print('folder', folder)
+print('causal_prior:', args.causal_prior)
+print('folder:', folder)
 
 
 

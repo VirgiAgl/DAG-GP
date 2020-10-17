@@ -56,9 +56,9 @@ name_index = args.name_index
 causal_prior = args.causal_prior
 experiment = args.experiment
 
-print('n_int', n_int)
-print('causal_prior', causal_prior)
-print('experiment', experiment)
+print('n_int:', n_int)
+print('causal_prior:', causal_prior)
+print('experiment:', experiment)
 
 
 ## Import observational data
@@ -102,12 +102,11 @@ save_results_CTF(folder,  args, causal_prior, Transferred_mean_list, Transferred
 
 
 
-print('Saved results')
+print('Results saved')
 
 print('Algorithm: CTF')
-print('causal_prior', args.causal_prior)
-print('name_index', name_index)
-print('folder', folder)
+print('causal_prior:', args.causal_prior)
+print('folder:', folder)
 
 
 

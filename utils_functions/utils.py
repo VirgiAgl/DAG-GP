@@ -118,7 +118,7 @@ def add_data(original, new):
 
 
 def find_current_global(current_y, dict_interventions, task):
-    ## This function finds the optimal value and variable at every iteration
+    ##�This function finds the optimal value and variable at every iteration
     dict_values = {}
     for j in range(len(dict_interventions)):
         dict_values[dict_interventions[j]] = []
@@ -139,7 +139,7 @@ def find_current_global(current_y, dict_interventions, task):
 
 
 def find_next_y_point_CTF(Transferred_mean, Transferred_covariance, current_global, costs, graph):
-    ## This function optimises the acquisition function and return the next point together with the 
+    ##This function optimises the acquisition function and return the next point together with the 
     ## corresponding y value for the acquisition function
     test_inputs_list = graph.get_test_inputs_list(size = 300)
     
@@ -178,27 +178,12 @@ def find_next_y_point_CTF(Transferred_mean, Transferred_covariance, current_glob
         x_new_list.append(test_inputs_list[-1][index])
         improvement_list.append(improvement[index])
 
-
-    print('###x_new_list',x_new_list)
-    print('###improvement_list',improvement_list)
-
     return improvement_list, x_new_list    
 
         
 def find_next_y_point(space, model, current_global_best, evaluated_set, costs_functions, graph, task = 'min'):
     ## This function optimises the acquisition function and return the next point together with the 
     ## corresponding y value for the acquisition function
-    # cost_acquisition = Cost(costs_functions, evaluated_set)
-    # optimizer = CausalGradientAcquisitionOptimizer(space)
-    # acquisition = CausalExpectedImprovement(current_global_best, task, model)/cost_acquisition
-    # x_new, _ = optimizer.optimize(acquisition)
-    # y_acquisition = acquisition.evaluate(x_new)  
-
-    ##
-    print('evaluated_set', evaluated_set)
-    print('evaluated_set', len(evaluated_set))
-    print('evaluated_set', evaluated_set[0])
-    print('graph.get_interventional_ranges(), evaluated_set[0]', graph.get_interventional_ranges(), evaluated_set[0])
 
     if len(evaluated_set) == 1:
         min_intervention0 = list_interventional_ranges(graph.get_interventional_ranges(), evaluated_set[0])[0]
@@ -236,9 +221,7 @@ def find_next_y_point(space, model, current_global_best, evaluated_set, costs_fu
 
 def fit_single_GP_model(X, Y, parameter_list, ard = False):
     kernel = RBF(X.shape[1], ARD = parameter_list[2], lengthscale=parameter_list[0], variance = parameter_list[1]) 
-    #kernel.variance.fix(1.)
     gp = GPRegression(X = X, Y = Y, kernel = kernel, noise_var= 1e-5)
-    #gp.likelihood.variance.fix(1e-2)
     gp.optimize()
     return gp
 
@@ -315,8 +298,6 @@ def get_test_inputs_list(self, size):
             # Need to reduce the size for computational reasons
             size =int(np.sqrt(size))
 
-            print('size', size)
-
             for i in range(len(ES[j])):
                 variable = ES[j][i]
                 min_value = dict_ranges[variable][0]
@@ -326,8 +307,6 @@ def get_test_inputs_list(self, size):
 
             inputs = combine_arrays(subset_inputs)
             test_inputs_list.append(inputs)
-
-            print('test_inputs_list', inputs.shape)
 
         return test_inputs_list
 
